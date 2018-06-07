@@ -1,6 +1,12 @@
 <template>
 	<span>
-		<img class="box" :src='require(`@/assets/boardImages/${myImageSrc}`)' @click.stop="handleClick" @contextmenu.stop="handleContextMenu"></img>
+<!-- 		<span @click.stop="handleClick" @contextmenu.stop="handleContextMenu">
+			{{imagePath}}
+
+		</span>
+ -->
+
+		<img class="box" :src='imageSource' @click.stop="handleClick" @contextmenu.stop="handleContextMenu"></img>
 	</span>
 </template>
 
@@ -8,29 +14,22 @@
 import {mapState, mapGetters} from 'vuex'	
 
 export default {
-	data: function(){
-		return {
-			
-		}
-	},
 	props: ['row', 'column'],
-	methods: {
-	},
 	computed: {
 		...mapState({
 			game: state => state.game,
-			grid: state => state.board.grid
+			grid: state => state.board.grid,
+			totalRows: state => state.board.totalRows,
+			totalColumns: state => state.board.totalColumns,
+
 		}),
-		totalRows(){
-			return this.grid.length
-		},
-		totalColumns(){
-			return this.grid[0].length
-		},
 		meSquare(){
 			return this.grid[this.row][this.column]
 		},
-		myImageSrc(){
+		clickStatus(){
+			return this.meSquare.clicked
+		},
+		imagePath(){
 			let imageSource = this.meSquare.image
 			if (this.game.won) {
 				return this.meSquare.mine ? 'flag.png' : `${this.meSquare.image}.png`
@@ -41,6 +40,9 @@ export default {
 			} else {
 				return 'X.png'
 			}
+		},
+		imageSource(){
+			return this.game.images[this.imagePath]
 		},
 		neighbors(){
 			let row = this.row, 
@@ -53,10 +55,15 @@ export default {
 		   return neighbors
 		}
 	},
-	beforeUpdate(){
-		if (this.meSquare.clicked && this.meSquare.image == 0) {
-			this.handleNeighbors(this.neighbors)
-		}
+	watch: {
+		clickStatus(data){
+			if (data) {
+				if (this.meSquare.image === 0) {
+					this.handleNeighbors(this.neighbors)
+				}
+			}
+		},
+
 	},
 	methods: {
 		handleNeighbors(neighbors){
@@ -66,7 +73,8 @@ export default {
 			    if (row >= 0 && column >= 0 && row <= (this.totalRows - 1) && column <= this.totalColumns - 1) {
 			    	let realSquare = this.grid[row][column]
 			    	if (realSquare.image !== 'mine' && !realSquare.clicked) {
-			          this.$store.commit('clickSquare', {square: [row, column]})
+			          this.$store.commit('clickSquare', {square: [row, column]
+			          })
 
 			    	}
 
@@ -74,7 +82,10 @@ export default {
 			  })
 		},
 		handleClick(event){
+			console.log('start click')
 			if (this.game.playing === false) {
+				console.log('begin')
+				this.$store.commit('clickSquare', {square: [this.row, this.column]})
 				this.$store.commit('startGame')
 			}
 			if (this.meSquare.flag) {
@@ -83,15 +94,13 @@ export default {
 				this.$store.commit('loseGame')
 			} else if (!this.meSquare.clicked) {
 				this.$store.commit('clickSquare', {square: [this.row, this.column]})
-			
 			} 
-			else if (this.meSquare.clicked) {
-				let doubleNeighbors = this.getDoubleNeighbors()
-				this.handleNeighbors(doubleNeighbors)
-			}
-
 			// else if (this.meSquare.clicked) {
-			// 	// neighbor stuff
+			// 	let doubleNeighbors = this.getDoubleNeighbors()
+			// 	if (doubleNeighbors) {
+			// 		console.log('dowdy')
+			// 		this.handleNeighbors(doubleNeighbors)
+			// 	}
 			// }
 		},
 		handleContextMenu(event){
@@ -135,3 +144,17 @@ export default {
 <style>
 
 </style>
+
+
+<!-- let imageSource = this.meSquare.image
+			if (this.game.won) {
+			return this.meSquare.mine ? 'F' : `${this.meSquare.image}`
+
+				// return this.meSquare.mine ? 'flag.png' : `${this.meSquare.image}.png`
+			} else if (this.meSquare.clicked || this.game.lost) {
+				return `${this.meSquare.image}` // .png`
+			} else if (this.meSquare.flag) {
+				return 'F' //'flag.png'
+			} else {
+				return 'X' // .png'
+			} -->

@@ -69,7 +69,7 @@ function gridMaker (height, width){
       return square.mine === true
     })
     
-  return [objectsArray, mineCount.length]
+  return [objectsArray, mineCount.length, height, width]
   
 }
 
