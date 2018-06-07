@@ -6,7 +6,7 @@ function gridMaker (height, width){
       emptyArray.push(new Array(width).fill(null));
   }
   if (height * width < 100) {
-    Array.from(Array(10)).forEach((x, i)=>{
+    Array.from(Array(3)).forEach((x, i)=>{
       let row =  Math.floor((Math.random() * height))
       let column =  Math.floor((Math.random() * width))
       emptyArray[row][column] = "mine"

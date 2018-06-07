@@ -27,7 +27,7 @@ const boardModule = {
 			let clickState = clickedMe(payload.square, state)
 			state.grid = clickState
 		}
-	}
+	},
 }
 
 const flaggedMe = (array, state) => {
@@ -62,7 +62,7 @@ function gridSizer(difficulty){
   let grid;
   switch(difficulty) {
     case 'easy':
-      grid = Gridmaker(12, 12);
+      grid = Gridmaker(9, 10);
       break;
     case 'medium':
       grid = Gridmaker(16, 16);

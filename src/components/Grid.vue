@@ -29,13 +29,20 @@ export default {
 	},
 	computed: {
 		...mapState({
-			grid: state => state.board.grid
+			grid: state => state.board.grid,
+			mines: state => state.board.mines,
+			playing: state => state.game.playing
 		}),
 
 	},
 	created(){
 		// temporary
 		this.$store.commit('makeHard', {hardness: 'easy'})
+	},
+	updated(){
+		if (this.mines === 0 && this.playing === true) {
+			this.$store.commit('winGame')
+		}
 	}
 
 

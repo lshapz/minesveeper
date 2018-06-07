@@ -11,6 +11,7 @@ const gameModule = {
 		winGame(state){
 			state.playing = false
 			state.won = true
+			console.log('HUZZZAH')
 		},
 		loseGame(state){
 			state.playing = false
