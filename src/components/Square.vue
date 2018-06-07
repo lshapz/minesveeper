@@ -1,12 +1,13 @@
 <template>
-	<span :style="{color: randomColor()}">
-		Column: {{column}}
-	</span>
+	<span>
 
+		<img class="box" :src='require(`@/assets/boardImages/${myImageSrc}`)'></img>
+	</span>
 </template>
 
 <script>
-	
+import {mapState} from 'vuex'	
+
 export default {
 	data: function(){
 		return {
@@ -15,13 +16,26 @@ export default {
 	},
 	props: ['row', 'column'],
 	methods: {
-		// temporary
-		randomColor(){
-			let colorsArray = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violets']
-			let index = Math.floor(Math.random() * (colorsArray.length - 1))
-			console.log(colorsArray[index])
-			return colorsArray[index]
-		}
+	},
+	computed: {
+		...mapState({
+			game: state => state.game,
+			grid: state => state.board.grid
+		}),
+		meSquare(){
+			return this.grid[this.row][this.column]
+		},
+		myImageSrc(){
+			let imageSource = this.meSquare.image
+			if (this.meSquare.clicked || this.game.lost || this.game.won) {
+				return `${this.meSquare.image}.png`
+			} else if (this.meSquare.flag) {
+				return 'flag.png'
+			} else {
+				return 'X.png'
+			}
+		},
+
 	}
 }
 

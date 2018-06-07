@@ -59,7 +59,7 @@ function gridMaker (height, width){
 
   let objectsArray = numbersArray.map((line, rowIndex)=>{
     return line.map((cell, columnIndex)=>{
-      return {row: rowIndex, column: columnIndex, flag: false, mine: cell === 'mine' ? true : false, clicked: false, text: cell }
+      return {row: rowIndex, column: columnIndex, flag: false, mine: cell === 'mine' ? true : false, clicked: false, image: cell }
     })
   })
 
